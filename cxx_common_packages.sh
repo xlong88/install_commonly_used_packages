@@ -59,21 +59,29 @@ make && make install
 
 
 function install(){
+mkdir ~/temp && cd ~/temp
 for package in $(cat apt_get.txt)
 do
 install_atp_get ${package}
 done
 
 install_glpk
+cd ~/temp
 
 install_boost_cxx
+cd ~/temp
 
 install_lemon_cxx
+cd ~/temp
 
 for repo in $(cat git_repos.txt)
 do
+cd ~/temp
 install_with_git_and_cmake ${repo}
 done
+
+cd ~
+rm -rf temp
 }
 
 
