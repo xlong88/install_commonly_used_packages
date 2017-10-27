@@ -15,6 +15,12 @@ fname="${filename%.*}"
 echo ${fname}
 }
 
+function install_sublime(){
+wget https://download.sublimetext.com/sublime_text_3_build_3143_x64.tar.bz2
+bzip2 -d sublime_text_3_build_3143_x64.tar.bz2
+tar -xvf sublime_text_3_build_3143_x64.tar
+}
+
 function install_glpk(){
 wget https://ftp.gnu.org/gnu/glpk/glpk-4.63.tar.gz
 tar -zxvf glpk-4.63.tar.gz
@@ -82,6 +88,10 @@ done
 
 cd ~
 rm -rf temp
+
+sh -c "$(wget https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
+git clone --depth=1 https://github.com/amix/vimrc.git ~/.vim_runtime
+sh ~/.vim_runtime/install_awesome_vimrc.sh
 }
 
 
