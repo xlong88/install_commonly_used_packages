@@ -19,6 +19,8 @@ function install_sublime(){
 wget https://download.sublimetext.com/sublime_text_3_build_3143_x64.tar.bz2
 bzip2 -d sublime_text_3_build_3143_x64.tar.bz2
 tar -xvf sublime_text_3_build_3143_x64.tar
+sudo mv sublime_text_3 /usr/local
+sudo ln /usr/local/sublime_text_3/sublime_text /usr/bin/subl
 }
 
 function install_glpk(){
@@ -26,7 +28,7 @@ wget https://ftp.gnu.org/gnu/glpk/glpk-4.63.tar.gz
 tar -zxvf glpk-4.63.tar.gz
 cd glpk-4.63
 ./configure --disable-shared
-make && make install
+make && sudo make install
 }
 
 function install_lemon_cxx(){
@@ -38,7 +40,7 @@ cd lemon-1.3.1
 echo "Compiling"
 mkdir build && cd build
 cmake ..
-make && make install
+make && sudo make install
 }
 
 function install_boost_cxx(){
@@ -50,7 +52,7 @@ cd boost_1_65_1
 echo "Configure ..."
 ./bootstrap.sh
 echo "Install ..."
-./b2 install
+sudo ./b2 install
 }
 
 function install_with_git_and_cmake(){
@@ -60,7 +62,7 @@ git clone "$git_rep"
 cd ${rep_name}
 make build && cd build
 cmake ..
-make && make install
+make && sudo make install
 }
 
 
@@ -87,7 +89,7 @@ install_with_git_and_cmake ${repo}
 done
 
 cd ~
-rm -rf temp
+sudo rm -rf temp
 
 sh -c "$(wget https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
 git clone --depth=1 https://github.com/amix/vimrc.git ~/.vim_runtime
