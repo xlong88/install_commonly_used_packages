@@ -43,6 +43,40 @@ cmake ..
 make && sudo make install
 }
 
+function install_facebook_folly(){
+sudo apt-get install \
+    automake \
+    autoconf \
+    autoconf-archive \
+    libtool \
+    libevent-dev \
+    libdouble-conversion-dev \
+    libgoogle-glog-dev \
+    libgflags-dev \
+    liblz4-dev \
+    liblzma-dev \
+    libsnappy-dev \
+    zlib1g-dev \
+    binutils-dev \
+    libjemalloc-dev \
+    libssl-dev \
+    pkg-config
+sudo apt-get install \
+    libunwind8-dev \
+    libelf-dev \
+    libdwarf-dev
+sudo apt-get install \
+    libiberty-dev
+
+git clone https://github.com/facebook/folly.git
+cd folly/folly    
+autoreconf -ivf
+./configure
+make
+make check
+sudo make install
+}
+
 function install_boost_cxx(){
 echo "Download boost C++"
 wget https://dl.bintray.com/boostorg/release/1.65.1/source/boost_1_65_1.tar.gz
