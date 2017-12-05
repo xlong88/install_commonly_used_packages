@@ -78,15 +78,16 @@ sudo make install
 }
 
 function install_boost_cxx(){
-echo "Download boost C++"
-wget https://dl.bintray.com/boostorg/release/1.65.1/source/boost_1_65_1.tar.gz
-echo "Decompress boost_1_65_1.tar.gz"
-tar -zxvf boost_1_65_1.tar.gz
-cd boost_1_65_1
-echo "Configure ..."
-./bootstrap.sh
-echo "Install ..."
-sudo ./b2 install
+# echo "Download boost C++"
+# wget https://dl.bintray.com/boostorg/release/1.65.1/source/boost_1_65_1.tar.gz
+# echo "Decompress boost_1_65_1.tar.gz"
+# tar -zxvf boost_1_65_1.tar.gz
+# cd boost_1_65_1
+# echo "Configure ..."
+# ./bootstrap.sh
+# echo "Install ..."
+# sudo ./b2 install
+sudo apt-get install -y libboost-dev libboost-all-dev
 }
 
 function install_with_git_and_cmake(){
@@ -94,33 +95,86 @@ git_rep=$1
 rep_name=$(get_filename_without_extension "$git_rep")
 git clone "$git_rep"
 cd ${rep_name}
-make build && cd build
+mkdir build && cd build
 cmake ..
 make && sudo make install
 }
 
+function install_google_protobuf(){
+sudo apt-get install -y autoconf automake libtool curl make g++ unzip
+git clone https://github.com/google/protobuf.git
+cd protobuf/src
+./autogen.sh
+./configure
+make && make check && sudo make install 
+sudo ldconfig
+}
+
+function install_google_grpc(){
+sudo apt-get install -y libgflags-dev libgtest-dev
+sudo apt-get install -y clang libc++-dev
+git clone https://github.com/grpc/grpc.git
+cd grpc 
+git submodule update --init
+make && sudo make install
+}
+
+function install_pycharm(){
+    wget https://download-cf.jetbrains.com/python/pycharm-community-173.3727.88.tar.gz
+    mkdir pycharm
+    tar -zxvf pycharm-community-173.3727.88.tar.gz -C pycharm
+    sudo mv pycharm /usr/local
+}
+
+function install_clion(){
+    wget https://download-cf.jetbrains.com/cpp/CLion-2017.3-RC2.tar.gz
+    mkdir clion
+    tar -zxvf CLion-2017.3-RC2.tar.gz -C clion 
+    sudo mv clion /usr/local
+}
 
 function install(){
+CUR_PATH=$(pwd) 
 mkdir ~/temp && cd ~/temp
-for package in $(cat apt_get.txt)
-do
-install_atp_get ${package}
-done
+cp ${CUR_PATH}/*.txt .
+# for package in $(cat apt_get.txt)
+# do
+# install_atp_get ${package}
+# done
 
-install_glpk
+# install_glpk
+# cd ~/temp
+
+# install_boost_cxx
 cd ~/temp
 
-install_boost_cxx
-cd ~/temp
+# install_lemon_cxx
+# cd ~/temp
 
-install_lemon_cxx
-cd ~/temp
+# for repo in $(cat git_repos.txt)
+# do
+# cd ~/temp
+# install_with_git_and_cmake ${repo}
+# done
 
-for repo in $(cat git_repos.txt)
-do
+
+# cd ~/temp
+# install_pycharm
+# cd ~/temp 
+# install_clion
+# cd ~/temp 
+
 cd ~/temp
-install_with_git_and_cmake ${repo}
-done
+install_facebook_folly
+cd ~/temp 
+
+cd ~/temp 
+install_google_protobuf
+cd ~/temp 
+
+cd ~/temp 
+install_google_grpc
+cd ~/temp 
 
 cd ~
 sudo rm -rf temp
@@ -128,6 +182,7 @@ sudo rm -rf temp
 sh -c "$(wget https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
 git clone --depth=1 https://github.com/amix/vimrc.git ~/.vim_runtime
 sh ~/.vim_runtime/install_awesome_vimrc.sh
+
 }
 
 
