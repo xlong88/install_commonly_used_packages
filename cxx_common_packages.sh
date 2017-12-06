@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
+apt_get_installer=sudo apt-get install -y
 
 function install_atp_get(){
 package=$1
@@ -111,12 +112,19 @@ sudo ldconfig
 }
 
 function install_google_grpc(){
-sudo apt-get install -y libgflags-dev libgtest-dev
-sudo apt-get install -y clang libc++-dev
-git clone https://github.com/grpc/grpc.git
-cd grpc 
-git submodule update --init
-make && sudo make install
+${apt_get_installer} build-essential autoconf libtool curl git 
+git clone --recursive -b $(curl -L http://grpc.io/release) https://github.com/grpc/grpc
+cd grpc/third_party/protobuf
+${apt_get_installer} autoconf automake libtool curl make g++ unzip
+./autogen.sh
+./configure
+make 
+make check 
+sudo make install 
+sudo ldconfig
+cd ../..
+make 
+sudo make install
 }
 
 function install_pycharm(){
