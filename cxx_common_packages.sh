@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
-apt_get_installer=sudo apt-get install -y
+
 
 function install_atp_get(){
 package=$1
@@ -16,7 +16,16 @@ fname="${filename%.*}"
 echo ${fname}
 }
 
+function install_zlib()
+{
+    wget https://zlib.net/zlib-1.2.11.tar.gz
+    tar -zxvf zlib-1.2.11.tar.gz
+    zlib_dir=$(ls|grep zlib)
+    cd ${zlib_dir}
+    ./configure && make && sudo make install
+}
 function install_sublime(){
+echo "Download & Install Sublime Text ..."
 wget https://download.sublimetext.com/sublime_text_3_build_3143_x64.tar.bz2
 bzip2 -d sublime_text_3_build_3143_x64.tar.bz2
 tar -xvf sublime_text_3_build_3143_x64.tar
@@ -25,6 +34,7 @@ sudo ln /usr/local/sublime_text_3/sublime_text /usr/bin/subl
 }
 
 function install_glpk(){
+echo "Download & Install GLPK ..."
 wget https://ftp.gnu.org/gnu/glpk/glpk-4.63.tar.gz
 tar -zxvf glpk-4.63.tar.gz
 cd glpk-4.63
@@ -45,7 +55,8 @@ make && sudo make install
 }
 
 function install_facebook_folly(){
-sudo apt-get install \
+    echo "Install folly"
+sudo apt-get install -y\
     automake \
     autoconf \
     autoconf-archive \
@@ -62,11 +73,11 @@ sudo apt-get install \
     libjemalloc-dev \
     libssl-dev \
     pkg-config
-sudo apt-get install \
+sudo apt-get install -y\
     libunwind8-dev \
     libelf-dev \
     libdwarf-dev
-sudo apt-get install \
+sudo apt-get install -y\
     libiberty-dev
 
 git clone https://github.com/facebook/folly.git
@@ -79,20 +90,13 @@ sudo make install
 }
 
 function install_boost_cxx(){
-# echo "Download boost C++"
-# wget https://dl.bintray.com/boostorg/release/1.65.1/source/boost_1_65_1.tar.gz
-# echo "Decompress boost_1_65_1.tar.gz"
-# tar -zxvf boost_1_65_1.tar.gz
-# cd boost_1_65_1
-# echo "Configure ..."
-# ./bootstrap.sh
-# echo "Install ..."
-# sudo ./b2 install
+echo "Install Boost C++"
 sudo apt-get install -y libboost-dev libboost-all-dev
 }
 
 function install_with_git_and_cmake(){
 git_rep=$1
+echo "Install ${git_rep}"
 rep_name=$(get_filename_without_extension "$git_rep")
 git clone "$git_rep"
 cd ${rep_name}
@@ -101,21 +105,12 @@ cmake ..
 make && sudo make install
 }
 
-function install_google_protobuf(){
-sudo apt-get install -y autoconf automake libtool curl make g++ unzip
-git clone https://github.com/google/protobuf.git
-cd protobuf/src
-./autogen.sh
-./configure
-make && make check && sudo make install 
-sudo ldconfig
-}
-
 function install_google_grpc(){
-${apt_get_installer} build-essential autoconf libtool curl git 
+echo "Install GRPC ...."
+sudo apt-get install -y build-essential autoconf libtool curl git 
 git clone --recursive -b $(curl -L http://grpc.io/release) https://github.com/grpc/grpc
 cd grpc/third_party/protobuf
-${apt_get_installer} autoconf automake libtool curl make g++ unzip
+sudo apt-get install -y autoconf automake libtool curl make g++ unzip
 ./autogen.sh
 ./configure
 make 
@@ -128,6 +123,7 @@ sudo make install
 }
 
 function install_pycharm(){
+    echo "Download & Install pycharm ..."
     wget https://download-cf.jetbrains.com/python/pycharm-community-173.3727.88.tar.gz
     mkdir pycharm
     tar -zxvf pycharm-community-173.3727.88.tar.gz -C pycharm
@@ -135,54 +131,55 @@ function install_pycharm(){
 }
 
 function install_clion(){
+    echo "Download & Install Clion ..."
     wget https://download-cf.jetbrains.com/cpp/CLion-2017.3-RC2.tar.gz
     mkdir clion
     tar -zxvf CLion-2017.3-RC2.tar.gz -C clion 
     sudo mv clion /usr/local
 }
 
-function install(){
+function install_all(){
 CUR_PATH=$(pwd) 
-mkdir ~/temp && cd ~/temp
-cp ${CUR_PATH}/*.txt .
+# mkdir ~/temp && cd ~/temp
+# cp ${CUR_PATH}/*.txt .
 # for package in $(cat apt_get.txt)
 # do
 # install_atp_get ${package}
 # done
 
+cd ~/temp
 # install_glpk
-# cd ~/temp
 
+cd ~/temp
 # install_boost_cxx
-cd ~/temp
 
+cd ~/temp
 # install_lemon_cxx
-# cd ~/temp
-
-# for repo in $(cat git_repos.txt)
-# do
-# cd ~/temp
-# install_with_git_and_cmake ${repo}
-# done
-
-
-# cd ~/temp
-# install_pycharm
-# cd ~/temp 
-# install_clion
-# cd ~/temp 
 
 cd ~/temp
-install_facebook_folly
-cd ~/temp 
+install_zlib
 
-cd ~/temp 
-install_google_protobuf
-cd ~/temp 
+
+for repo in $(cat git_repos.txt)
+do
+cd ~/temp
+install_with_git_and_cmake ${repo}
+done
+
+cd ~/temp
+install_sublime
+
 
 cd ~/temp 
 install_google_grpc
+
+
+cd ~/temp
+install_pycharm
+
 cd ~/temp 
+install_clion
+
 
 cd ~
 sudo rm -rf temp
@@ -194,5 +191,5 @@ sh ~/.vim_runtime/install_awesome_vimrc.sh
 }
 
 
-install
+install_all
 

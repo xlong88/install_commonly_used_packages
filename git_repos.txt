@@ -1,4 +1,3 @@
 https://github.com/xlong88/HdrHistogram_c.git
-https://github.com/google/googletest.git
 https://github.com/xlong88/fmt.git
 https://github.com/xlong88/cxxopts.git
